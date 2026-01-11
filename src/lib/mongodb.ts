@@ -3,12 +3,9 @@ import { MongoClient, MongoClientOptions } from 'mongodb';
 
 const uri = process.env.NODE_ENV === 'development' ? process.env.LOCAL_MONGODB_URI as string : process.env.MONGODB_URI as string;
 
-console.log('uri', process.env.NODE_ENV);
-console.log('uri2', process.env.LOCAL_MONGODB_URI);
-console.log('uri3', process.env.MONGODB_URI);
 export function getDbName(): string {
   // return process.env.NODE_ENV === 'development' ? 'local' : 'lpai';
-  return process.env.NODE_ENV === 'development' ? 'lpai' : 'lpai';
+  return process.env.NODE_ENV === 'development' ? 'Test' : 'Test';
 }
 
 const options: MongoClientOptions = {};
