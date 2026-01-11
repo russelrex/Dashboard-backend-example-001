@@ -1,0 +1,103 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/refresh-tokens",
+      "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/process-critical",
+      "schedule": "*/2 * * * *"
+    },
+    {
+      "path": "/api/cron/process-messages",
+      "schedule": "*/3 * * * *"
+    },
+    {
+      "path": "/api/cron/process-automation-messages",
+      "schedule": "*/3 * * * *"
+    },
+    {
+      "path": "/api/cron/process-appointments",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/process-contacts",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/process-projects",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/process-financial",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/process-general",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/process-install-queue",
+      "schedule": "*/2 * * * *"
+    },
+    {
+      "path": "/api/cron/daily-report",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/weekly-report",
+      "schedule": "0 8 * * 1"
+    },
+    {
+      "path": "/api/cron/cleanup-old-records",
+      "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron/automation-scheduler",
+      "schedule": "*/3 * * * *"
+    },
+    {
+      "path": "/api/cron/process-automation-queue",
+      "schedule": "*/3 * * * *"
+    },
+    {
+      "path": "/api/cron/cleanup-deleted",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/cron/cleanup-automation-queue",
+      "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/cron/expire-tracking-sessions",
+      "schedule": "*/5 * * * *"
+    },
+    {
+      "path": "/api/cron/health",
+      "schedule": "*/15 * * * *"
+    }
+  ],
+  "functions": {
+    "pages/api/webhooks/ghl/native.ts": {
+      "maxDuration": 30
+    },
+    "pages/api/oauth/callback.ts": {
+      "maxDuration": 30
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/webhooks/ghl/native",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "POST, OPTIONS"
+        }
+      ]
+    }
+  ]
+}

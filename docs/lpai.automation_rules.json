@@ -1,0 +1,1878 @@
+[{
+  "_id": {
+    "$oid": "687edbb7df3b20c421e0192a"
+  },
+  "locationId": "TEMPLATE",
+  "isTemplate": true,
+  "name": "Schedule Reminder",
+  "description": "Send reminder SMS before scheduled visit",
+  "trigger": {
+    "type": "stage-delay",
+    "stageId": "visit-scheduled",
+    "config": {
+      "delayAmount": 1,
+      "delayUnit": "days"
+    }
+  },
+  "actions": [
+    {
+      "type": "send-sms",
+      "config": {
+        "message": "Reminder: Your visit is scheduled for tomorrow. We'll see you soon!",
+        "from": "location"
+      }
+    }
+  ],
+  "priority": 0,
+  "isActive": true,
+  "createdBy": "system",
+  "createdAt": {
+    "$date": "2025-07-22T00:30:46.964Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-22T00:30:46.964Z"
+  },
+  "executionStats": {
+    "executionCount": 0,
+    "successCount": 0,
+    "failureCount": 0
+  }
+},
+{
+  "_id": {
+    "$oid": "687edbb7df3b20c421e0192c"
+  },
+  "locationId": "TEMPLATE",
+  "isTemplate": true,
+  "name": "Team Notification",
+  "description": "Notify team when job is accepted",
+  "trigger": {
+    "type": "enter-stage",
+    "stageId": "accepted",
+    "config": {}
+  },
+  "actions": [
+    {
+      "type": "team-notification",
+      "config": {
+        "message": "New job accepted! 🎉",
+        "recipients": [
+          "assigned_user"
+        ]
+      }
+    }
+  ],
+  "priority": 0,
+  "isActive": true,
+  "createdBy": "system",
+  "createdAt": {
+    "$date": "2025-07-22T00:30:46.964Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-22T00:30:46.964Z"
+  },
+  "executionStats": {
+    "executionCount": 0,
+    "successCount": 0,
+    "failureCount": 0
+  }
+},
+{
+  "_id": {
+    "$oid": "687edbb7df3b20c421e0192d"
+  },
+  "locationId": "TEMPLATE",
+  "isTemplate": true,
+  "name": "Payment Reminder",
+  "description": "Send payment reminder after job completion",
+  "trigger": {
+    "type": "stage-delay",
+    "stageId": "completed",
+    "config": {
+      "delayAmount": 3,
+      "delayUnit": "days"
+    }
+  },
+  "actions": [
+    {
+      "type": "send-email",
+      "config": {
+        "subject": "Payment Reminder",
+        "message": "Thank you for choosing us! Please complete your payment to finalize the project.",
+        "from": "location"
+      }
+    }
+  ],
+  "priority": 0,
+  "isActive": true,
+  "createdBy": "system",
+  "createdAt": {
+    "$date": "2025-07-22T00:30:46.964Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-22T00:30:46.964Z"
+  },
+  "executionStats": {
+    "executionCount": 0,
+    "successCount": 0,
+    "failureCount": 0
+  }
+},
+{
+  "_id": {
+    "$oid": "687edbb7df3b20c421e0192b"
+  },
+  "locationId": "TEMPLATE",
+  "isTemplate": true,
+  "name": "Quote Follow-up",
+  "description": "Send follow-up email when quote is viewed",
+  "trigger": {
+    "type": "quote-viewed",
+    "stageId": "quote-sent",
+    "config": {}
+  },
+  "actions": [
+    {
+      "type": "send-email",
+      "config": {
+        "subject": "Your Quote - Any Questions?",
+        "message": "We noticed you viewed your quote. Do you have any questions? We're here to help!",
+        "from": "location"
+      }
+    }
+  ],
+  "priority": 0,
+  "isActive": true,
+  "createdBy": "system",
+  "createdAt": {
+    "$date": "2025-07-22T00:30:46.964Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-22T00:30:46.964Z"
+  },
+  "executionStats": {
+    "executionCount": 0,
+    "successCount": 0,
+    "failureCount": 0
+  }
+},
+{
+  "_id": {
+    "$oid": "687edbb7df3b20c421e01929"
+  },
+  "locationId": "TEMPLATE",
+  "isTemplate": true,
+  "name": "Welcome SMS",
+  "description": "Send welcome SMS when job enters first stage",
+  "trigger": {
+    "type": "enter-stage",
+    "stageId": "created",
+    "config": {}
+  },
+  "actions": [
+    {
+      "type": "send-sms",
+      "config": {
+        "message": "Welcome! We're excited to work with you on your project.",
+        "from": "location"
+      }
+    }
+  ],
+  "priority": 0,
+  "isActive": true,
+  "createdBy": "system",
+  "createdAt": {
+    "$date": "2025-07-22T00:30:46.964Z"
+  },
+  "updatedAt": {
+    "$date": "2025-07-22T00:30:46.964Z"
+  },
+  "executionStats": {
+    "executionCount": 0,
+    "successCount": 0,
+    "failureCount": 0
+  }
+},
+{
+  "_id": "687ff62358ab6c38f1e29bc1",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "New Lead Assignment & Notification",
+  "description": "Assigns consultant and sends initial acknowledgment when a new lead is created",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "project-created",
+    "entityType": "project",
+    "stageId": "b4d9e2ef-672c-4f3b-8440-f259ea968ae7",
+    "pipelineId": "9cGrqJIQlofiY1Ehj8xf"
+  },
+  "conditions": [],
+  "actions": [
+    {
+      "type": "push-notification",
+      "config": {
+        "recipientType": "assigned-user",
+        "template": {
+          "title": "🔥 New Lead Assigned",
+          "body": "{{contact.name}} - {{project.serviceType}}",
+          "priority": 10,
+          "data": {
+            "type": "new-lead",
+            "projectId": "{{project._id}}"
+          }
+        },
+        "delay": {
+          "amount": 0,
+          "unit": "minutes"
+        }
+      }
+    },
+    {
+      "type": "create-task",
+      "config": {
+        "title": "New Lead: Contact {{contact.name}}",
+        "assignTo": "{{project.assignedUserId}}",
+        "dueInHours": 2,
+        "priority": "high",
+        "taskType": "new-lead-contact",
+        "delay": {
+          "amount": 5,
+          "unit": "minutes"
+        }
+      }
+    },
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "requireApproval": true,
+        "checkOptIn": true,
+        "template": "new-lead-acknowledgment",
+        "message": "Hi {{contact.firstName}}! Thanks for contacting {{location.name}}. We'll call you within 2 hours regarding your {{project.serviceType}} request.",
+        "delay": {
+          "amount": 1,
+          "unit": "hours"
+        }
+      }
+    },
+    {
+      "type": "send-email",
+      "config": {
+        "recipient": "contact",
+        "template": "new-lead-welcome",
+        "requireApproval": false,
+        "delay": {
+          "amount": 24,
+          "unit": "hours"
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.626Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z",
+  "executionStats": {
+    "executionCount": 67416,
+    "lastExecuted": {
+      "$date": "2025-09-01T15:24:58.061Z"
+    },
+    "successCount": 67411,
+    "failureCount": 5
+  }
+},
+{
+  "_id": "687ff62358ab6c38f1e29bc2",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Lead Response Overdue Warning",
+  "description": "Alerts consultant when 1 hour left to contact lead",
+  "isActive": true,
+  "priority": 8,
+  "trigger": {
+    "type": "time-based",
+    "entityType": "project",
+    "config": {
+      "delayMinutes": 60,
+      "fromEvent": "stage:entered",
+      "stageId": "b4d9e2ef-672c-4f3b-8440-f259ea968ae7"
+    }
+  },
+  "conditions": [
+    {
+      "type": "stage-equals",
+      "field": "stage",
+      "operator": "equals",
+      "value": "b4d9e2ef-672c-4f3b-8440-f259ea968ae7"
+    }
+  ],
+  "actions": [
+    {
+      "type": "push-notification",
+      "config": {
+        "recipientType": "assigned-user",
+        "template": {
+          "title": "⚠️ Lead Response Due Soon",
+          "body": "1 hour left to contact {{contact.name}}",
+          "priority": 9
+        },
+        "delay": {
+          "amount": 1,
+          "unit": "hours"
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bc3",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Lead Response Overdue Escalation",
+  "description": "Escalates to manager after 2 hours without response",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "time-based",
+    "entityType": "project",
+    "config": {
+      "delayMinutes": 120,
+      "fromEvent": "stage:entered",
+      "stageId": "b4d9e2ef-672c-4f3b-8440-f259ea968ae7"
+    }
+  },
+  "conditions": [
+    {
+      "type": "stage-equals",
+      "field": "stage",
+      "operator": "equals",
+      "value": "b4d9e2ef-672c-4f3b-8440-f259ea968ae7"
+    }
+  ],
+  "actions": [
+    {
+      "type": "push-notification",
+      "config": {
+        "recipientType": "role",
+        "recipientRole": "manager",
+        "template": {
+          "title": "🚨 OVERDUE Lead Response",
+          "body": "{{consultant.name}} hasn't contacted {{contact.name}}",
+          "priority": 10
+        },
+        "delay": {
+          "amount": 2,
+          "unit": "hours"
+        }
+      }
+    },
+    {
+      "type": "create-task",
+      "config": {
+        "title": "OVERDUE: Contact {{contact.name}} IMMEDIATELY",
+        "assignTo": "{{project.assignedUserId}}",
+        "priority": "urgent",
+        "escalated": true,
+        "delay": {
+          "amount": 2,
+          "unit": "hours"
+        }
+      }
+    },
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "checkOptIn": true,
+        "requireApproval": false,
+        "template": "overdue-apology",
+        "message": "Hi {{contact.firstName}}, we apologize for the delay. When is a good time to call you today?",
+        "delay": {
+          "amount": 2,
+          "unit": "hours"
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bc4",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Appointment Scheduled Confirmation",
+  "description": "Sends confirmations when estimate appointment is booked",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "appointment-scheduled",
+    "entityType": "appointment",
+    "config": {}
+  },
+  "conditions": [],
+  "actions": [
+    {
+      "type": "move-to-stage",
+      "config": {
+        "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+        "stageId": "2b699ead-3ab3-4664-9cc4-361e349fea2c",
+        "delay": {
+          "amount": 0,
+          "unit": "minutes"
+        }
+      }
+    },
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "checkOptIn": true,
+        "requireApproval": false,
+        "template": "appointment-confirmation",
+        "message": "✅ Estimate scheduled!\n\n📅 {{appointment.date}} at {{appointment.time}}\n📍 {{project.address}}\n👷 {{consultant.name}}\n\nReply R to reschedule",
+        "body": "\n        <h3>Appointment Confirmation</h3>\n        <p>Hello {{contact.firstName}},</p>\n        <p>Your appointment has been scheduled:</p>\n        <ul>\n          <li><strong>Date:</strong> {{appointment.date}}</li>\n          <li><strong>Time:</strong> {{appointment.time}}</li>\n          <li><strong>Location:</strong> {{project.address}}</li>\n          <li><strong>With:</strong> {{consultant.name}}</li>\n        </ul>\n        <p>We'll see you soon!</p>\n      ",
+        "delay": {
+          "amount": 0,
+          "unit": "minutes"
+        }
+      }
+    },
+    {
+      "type": "send-email",
+      "config": {
+        "recipient": "contact",
+        "template": "appointment-confirmation-email",
+        "attachCalendarFile": true,
+        "delay": {
+          "amount": 0,
+          "unit": "minutes"
+        }
+      }
+    },
+    {
+      "type": "create-task",
+      "config": {
+        "title": "Prepare for estimate: {{contact.name}}",
+        "assignTo": "{{consultant.userId}}",
+        "dueInHours": -1,
+        "priority": "medium",
+        "checklist": [
+          "Review property details",
+          "Check previous quotes in area",
+          "Prepare measurement tools",
+          "Charge tablet/phone"
+        ],
+        "delay": {
+          "amount": 1,
+          "unit": "hours"
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z",
+  "executionStats": {
+    "executionCount": 4,
+    "lastExecuted": {
+      "$date": "2025-08-27T19:07:33.537Z"
+    },
+    "successCount": 4
+  }
+},
+{
+  "_id": "687ff62358ab6c38f1e29bc5",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "24-Hour Appointment Reminder",
+  "description": "Reminds customer and consultant day before appointment",
+  "isActive": true,
+  "priority": 8,
+  "trigger": {
+    "type": "time-based",
+    "entityType": "appointment",
+    "config": {
+      "delayHours": -24,
+      "fromEvent": "appointment:start"
+    }
+  },
+  "conditions": [
+    {
+      "type": "stage-equals",
+      "field": "project.stage",
+      "operator": "equals",
+      "value": "2b699ead-3ab3-4664-9cc4-361e349fea2c"
+    }
+  ],
+  "actions": [
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "checkOptIn": true,
+        "requireApproval": true,
+        "template": "appointment-reminder-24h",
+        "message": "Reminder: {{consultant.name}} will visit tomorrow at {{appointment.time}} for your {{project.serviceType}} estimate. Reply R to reschedule.",
+        "delay": {
+          "amount": -24,
+          "unit": "hours",
+          "relativeToField": "appointment.startTime"
+        }
+      }
+    },
+    {
+      "type": "send-email",
+      "config": {
+        "recipient": "contact",
+        "template": "appointment-reminder-24h",
+        "requireApproval": false,
+        "delay": {
+          "amount": -24,
+          "unit": "hours",
+          "relativeToField": "appointment.startTime"
+        }
+      }
+    },
+    {
+      "type": "push-notification",
+      "config": {
+        "recipientType": "assigned-user",
+        "template": {
+          "title": "📅 Tomorrow's Estimate",
+          "body": "{{contact.name}} at {{appointment.time}}"
+        },
+        "delay": {
+          "amount": -24,
+          "unit": "hours",
+          "relativeToField": "appointment.startTime"
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bc6",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "2-Hour Appointment Reminder",
+  "description": "Final reminder 2 hours before appointment",
+  "isActive": true,
+  "priority": 9,
+  "trigger": {
+    "type": "time-based",
+    "entityType": "appointment",
+    "config": {
+      "delayHours": -2,
+      "fromEvent": "appointment:start"
+    }
+  },
+  "conditions": [
+    {
+      "type": "stage-equals",
+      "field": "project.stage",
+      "operator": "equals",
+      "value": "2b699ead-3ab3-4664-9cc4-361e349fea2c"
+    }
+  ],
+  "actions": [
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "checkOptIn": true,
+        "requireApproval": false,
+        "template": "appointment-reminder-2h",
+        "message": "{{consultant.name}} will arrive between {{appointment.timeWindow}} today. We'll text when on the way.",
+        "delay": {
+          "amount": -2,
+          "unit": "hours",
+          "relativeToField": "appointment.startTime"
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bc7",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Auto-Move to Visit Done",
+  "description": "Automatically moves to Visit Done after appointment time",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "time-based",
+    "entityType": "appointment",
+    "config": {
+      "delayMinutes": 60,
+      "fromEvent": "appointment:end"
+    }
+  },
+  "conditions": [
+    {
+      "type": "stage-equals",
+      "field": "project.stage",
+      "operator": "equals",
+      "value": "2b699ead-3ab3-4664-9cc4-361e349fea2c"
+    }
+  ],
+  "actions": [
+    {
+      "type": "move-to-stage",
+      "config": {
+        "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+        "stageId": "8b7f58d9-b881-4425-b4e6-8d5fe8196f51"
+      }
+    },
+    {
+      "type": "create-task",
+      "config": {
+        "title": "Complete quote for {{contact.name}}",
+        "assignTo": "{{project.assignedUserId}}",
+        "dueInHours": 24,
+        "priority": "high",
+        "checklist": [
+          "Review photos and measurements",
+          "Calculate materials needed",
+          "Apply current pricing",
+          "Add labor estimates",
+          "Review for accuracy"
+        ]
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bc8",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Visit Complete Thank You",
+  "description": "Thanks customer after estimate visit",
+  "isActive": true,
+  "priority": 7,
+  "trigger": {
+    "type": "stage-entered",
+    "entityType": "project",
+    "stageId": "8b7f58d9-b881-4425-b4e6-8d5fe8196f51",
+    "pipelineId": "9cGrqJIQlofiY1Ehj8xf"
+  },
+  "conditions": [],
+  "actions": [
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "checkOptIn": true,
+        "requireApproval": true,
+        "template": "visit-complete",
+        "message": "Thanks for your time today! {{consultant.name}} is preparing your detailed quote. You'll receive it within 24 hours."
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bc9",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Quote Completion Reminder",
+  "description": "Reminds consultant if quote not started after visit",
+  "isActive": true,
+  "priority": 6,
+  "trigger": {
+    "type": "time-based",
+    "entityType": "project",
+    "config": {
+      "delayHours": 12,
+      "fromEvent": "stage:entered",
+      "stageId": "8b7f58d9-b881-4425-b4e6-8d5fe8196f51"
+    }
+  },
+  "conditions": [
+    {
+      "type": "stage-equals",
+      "field": "project.stage",
+      "operator": "equals",
+      "value": "8b7f58d9-b881-4425-b4e6-8d5fe8196f51"
+    }
+  ],
+  "actions": [
+    {
+      "type": "push-notification",
+      "config": {
+        "recipientType": "assigned-user",
+        "template": {
+          "title": "⏰ Quote Reminder",
+          "body": "Quote for {{contact.name}} due in 12 hours",
+          "priority": 7
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bca",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Auto-Move to Quoting",
+  "description": "Moves to quoting when quote is started",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "quote-created",
+    "entityType": "quote"
+  },
+  "conditions": [],
+  "actions": [
+    {
+      "type": "move-to-stage",
+      "config": {
+        "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+        "stageId": "2113e1be-5d38-497e-bbdb-083f07f11290"
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z",
+  "executionStats": {
+    "executionCount": 1,
+    "lastExecuted": {
+      "$date": "2025-08-27T15:35:18.818Z"
+    },
+    "successCount": 1
+  }
+},
+{
+  "_id": "687ff62358ab6c38f1e29bcb",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Quote Sent Notification",
+  "description": "Notifies customer when quote is ready",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "quote-published",
+    "entityType": "quote"
+  },
+  "conditions": [],
+  "actions": [
+    {
+      "type": "move-to-stage",
+      "config": {
+        "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+        "stageId": "d555045c-9857-4dba-8690-9631068b847e"
+      }
+    },
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "checkOptIn": true,
+        "requireApproval": true,
+        "template": "quote-ready",
+        "message": "Your {{project.serviceType}} quote is ready!\n\nTotal: ${{quote.total}}\nValid until: {{quote.expiryDate}}\n\nView here: {{quote.publicLink}}"
+      }
+    },
+    {
+      "type": "send-email",
+      "config": {
+        "recipient": "contact",
+        "template": "quote-delivery",
+        "attachPDF": true,
+        "enableTracking": true
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bcc",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Quote Follow-up Day 3",
+  "description": "Follow up if quote not viewed after 3 days",
+  "isActive": true,
+  "priority": 7,
+  "trigger": {
+    "type": "time-based",
+    "entityType": "quote",
+    "config": {
+      "delayDays": 3,
+      "fromEvent": "quote:sent"
+    }
+  },
+  "conditions": [
+    {
+      "type": "stage-equals",
+      "field": "project.stage",
+      "operator": "equals",
+      "value": "d555045c-9857-4dba-8690-9631068b847e"
+    }
+  ],
+  "actions": [
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "checkOptIn": true,
+        "requireApproval": true,
+        "template": "quote-followup-3d",
+        "message": "Hi {{contact.firstName}}, just checking you received your {{project.serviceType}} quote. Having trouble viewing it? I can help! - {{consultant.name}}",
+        "delay": {
+          "amount": 3,
+          "unit": "days"
+        },
+        "conditions": [
+          {
+            "type": "business-hours",
+            "checkBefore": true,
+            "rescheduleIfOutside": true,
+            "businessHours": {
+              "start": 8,
+              "end": 18,
+              "weekdays": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ]
+            }
+          }
+        ],
+        "businessHours": {
+          "start": 9,
+          "end": 17,
+          "days": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "timezone": "America/Denver"
+        },
+        "businessHoursOnly": true
+      }
+    },
+    {
+      "type": "create-task",
+      "config": {
+        "title": "Follow up: {{contact.name}} quote",
+        "assignTo": "{{project.assignedUserId}}",
+        "priority": "medium",
+        "delay": {
+          "amount": 3,
+          "unit": "days"
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bcd",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Quote Follow-up Day 7",
+  "description": "Follow up after 7 days",
+  "isActive": true,
+  "priority": 7,
+  "trigger": {
+    "type": "time-based",
+    "entityType": "quote",
+    "config": {
+      "delayDays": 7,
+      "fromEvent": "quote:sent"
+    }
+  },
+  "conditions": [
+    {
+      "type": "stage-in",
+      "field": "project.stage",
+      "operator": "in",
+      "value": "d555045c-9857-4dba-8690-9631068b847e"
+    }
+  ],
+  "actions": [
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "checkOptIn": true,
+        "requireApproval": true,
+        "template": "quote-followup-7d",
+        "message": "Hi {{contact.firstName}}, any questions about your {{project.serviceType}} quote? I'm happy to discuss options or adjust the scope. - {{consultant.name}}",
+        "delay": {
+          "amount": 7,
+          "unit": "days"
+        }
+      }
+    },
+    {
+      "type": "send-email",
+      "config": {
+        "recipient": "contact",
+        "template": "quote-followup-7d",
+        "requireApproval": true,
+        "delay": {
+          "amount": 7,
+          "unit": "days"
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bce",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Quote Follow-up Day 14",
+  "description": "Two week follow-up with special offer",
+  "isActive": true,
+  "priority": 6,
+  "trigger": {
+    "type": "time-based",
+    "entityType": "quote",
+    "config": {
+      "delayDays": 14,
+      "fromEvent": "quote:sent"
+    }
+  },
+  "conditions": [
+    {
+      "type": "stage-in",
+      "field": "project.stage",
+      "operator": "in",
+      "value": "d555045c-9857-4dba-8690-9631068b847e"
+    }
+  ],
+  "actions": [
+    {
+      "type": "send-email",
+      "config": {
+        "recipient": "contact",
+        "template": "quote-followup-14d",
+        "requireApproval": true,
+        "subject": "Special offer on your {{project.serviceType}} quote",
+        "delay": {
+          "amount": 14,
+          "unit": "days"
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bcf",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Quote Expiring Soon",
+  "description": "Warning 5 days before quote expires",
+  "isActive": true,
+  "priority": 8,
+  "trigger": {
+    "type": "time-based",
+    "entityType": "quote",
+    "config": {
+      "delayDays": -5,
+      "fromEvent": "quote:expiry"
+    }
+  },
+  "conditions": [
+    {
+      "type": "stage-in",
+      "field": "project.stage",
+      "operator": "in",
+      "value": "d555045c-9857-4dba-8690-9631068b847e"
+    }
+  ],
+  "actions": [
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "checkOptIn": true,
+        "requireApproval": false,
+        "template": "quote-expiring",
+        "message": "⏰ Your quote expires in 5 days! Current price of ${{quote.total}} is locked in until {{quote.expiryDate}}. After that, prices may increase.",
+        "delay": {
+          "amount": -5,
+          "unit": "days",
+          "relativeToField": "quote.expiryDate"
+        }
+      }
+    },
+    {
+      "type": "push-notification",
+      "config": {
+        "recipientType": "assigned-user",
+        "template": {
+          "title": "Quote Expiring Soon",
+          "body": "{{contact.name}}'s quote expires in 5 days"
+        },
+        "delay": {
+          "amount": -5,
+          "unit": "days",
+          "relativeToField": "quote.expiryDate"
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.627Z",
+  "updatedAt": "2025-07-22T20:35:47.627Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bd0",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Hot Lead Alert - Quote Viewed",
+  "description": "Instantly notifies consultant when quote is viewed",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "quote-viewed",
+    "entityType": "quote"
+  },
+  "conditions": [
+    {
+      "type": "stage-equals",
+      "field": "project.stage",
+      "operator": "equals",
+      "value": "d555045c-9857-4dba-8690-9631068b847e"
+    }
+  ],
+  "actions": [
+    {
+      "type": "move-to-stage",
+      "config": {
+        "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+        "stageId": "8ef323fa-0f00-4a29-b1c9-2237ce36be83",
+        "delay": {
+          "amount": 0,
+          "unit": "minutes"
+        }
+      }
+    },
+    {
+      "type": "push-notification",
+      "config": {
+        "recipientType": "assigned-user",
+        "urgent": true,
+        "template": {
+          "title": "🔥 HOT LEAD - Viewing Quote NOW!",
+          "body": "{{contact.name}} is looking at their ${{quote.total}} quote",
+          "priority": 10,
+          "ttl": 300,
+          "data": {
+            "type": "hot-lead",
+            "projectId": "{{project._id}}",
+            "contactPhone": "{{contact.phone}}"
+          }
+        },
+        "delay": {
+          "amount": 0,
+          "unit": "minutes"
+        }
+      }
+    },
+    {
+      "type": "create-task",
+      "config": {
+        "title": "🔥 CALL NOW: {{contact.name}} viewing quote",
+        "assignTo": "{{project.assignedUserId}}",
+        "dueInMinutes": 30,
+        "priority": "critical",
+        "autoCall": true,
+        "delay": {
+          "amount": 5,
+          "unit": "minutes"
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.628Z",
+  "updatedAt": "2025-07-22T20:35:47.628Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bd1",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Viewing Follow-up",
+  "description": "Follow up 1 hour after customer views quote",
+  "isActive": true,
+  "priority": 7,
+  "trigger": {
+    "type": "time-based",
+    "entityType": "quote",
+    "config": {
+      "delayMinutes": 60,
+      "fromEvent": "quote:viewed"
+    }
+  },
+  "conditions": [
+    {
+      "type": "stage-equals",
+      "field": "project.stage",
+      "operator": "equals",
+      "value": "8ef323fa-0f00-4a29-b1c9-2237ce36be83"
+    }
+  ],
+  "actions": [
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "checkOptIn": true,
+        "requireApproval": true,
+        "template": "viewing-followup",
+        "message": "I see you've had a chance to review the quote. I'm available now if you have any questions! - {{consultant.name}}",
+        "delay": {
+          "amount": 1,
+          "unit": "hours"
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.628Z",
+  "updatedAt": "2025-07-22T20:35:47.628Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bd2",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Quote Accepted Celebration",
+  "description": "Celebrates when quote is accepted",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "stage-entered",
+    "entityType": "project",
+    "stageId": "cb72a0ac-2462-4e9c-8450-54865d02038e",
+    "pipelineId": "9cGrqJIQlofiY1Ehj8xf"
+  },
+  "conditions": [],
+  "actions": [
+    {
+      "type": "push-notification",
+      "config": {
+        "recipientType": "assigned-user",
+        "template": {
+          "title": "🎉 Quote Accepted!",
+          "body": "{{contact.name}} accepted ${{quote.total}}",
+          "sound": "celebration.wav",
+          "priority": 10
+        }
+      }
+    },
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "checkOptIn": true,
+        "requireApproval": false,
+        "template": "quote-accepted",
+        "message": "🎉 Wonderful! We're excited to work with you. Contract coming shortly for signature."
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.628Z",
+  "updatedAt": "2025-07-22T20:35:47.628Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bd3",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Contract Signed Process",
+  "description": "Handles contract signature and deposit request",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "stage-entered",
+    "entityType": "project",
+    "stageId": "b48699ce-5a88-4ecd-a2e0-aec07219bc22",
+    "pipelineId": "9cGrqJIQlofiY1Ehj8xf"
+  },
+  "conditions": [],
+  "actions": [
+    {
+      "type": "send-email",
+      "config": {
+        "recipient": "contact",
+        "template": "contract-executed",
+        "attachments": [
+          "signed-contract"
+        ],
+        "subject": "Your signed contract - {{company.name}}"
+      }
+    },
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "checkOptIn": true,
+        "requireApproval": true,
+        "template": "deposit-request",
+        "message": "To secure your project start date, please submit your deposit: {{payment.link}}"
+      }
+    },
+    {
+      "type": "create-task",
+      "config": {
+        "title": "Collect deposit from {{contact.name}}",
+        "assignTo": "{{project.assignedUserId}}",
+        "priority": "high",
+        "dueInDays": 3
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.628Z",
+  "updatedAt": "2025-07-22T20:35:47.628Z"
+},
+{
+  "_id": "687ff62358ab6c38f1e29bd4",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Deposit Received Transition",
+  "description": "When deposit is received, move to active jobs regardless of current stage",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "payment-received",
+    "entityType": "payment",
+    "config": {
+      "paymentType": "deposit"
+    }
+  },
+  "conditions": [],
+  "actions": [
+    {
+      "type": "move-to-stage",
+      "config": {
+        "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+        "stageId": "0a3414cd-bc81-43fa-9b4b-f98906995f99"
+      }
+    },
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "checkOptIn": true,
+        "requireApproval": false,
+        "template": "deposit-received",
+        "message": "✅ Deposit received! Thank you. Your project is officially scheduled. We'll contact you soon with start date details."
+      }
+    },
+    {
+      "type": "transition-pipeline",
+      "config": {
+        "toPipelineId": "aaSTiFRrEPvGYXR9uw85",
+        "toStageId": "dd64488d-9d19-4d8a-9e05-54e0a80b4c09"
+      }
+    },
+    {
+      "type": "create-task",
+      "config": {
+        "title": "Schedule project: {{contact.name}}",
+        "assignTo": "{{location.schedulerId}}",
+        "priority": "high",
+        "projectId": "{{project._id}}"
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.628Z",
+  "updatedAt": "2025-07-22T20:35:47.628Z",
+  "executionStats": {
+    "executionCount": 5,
+    "lastExecuted": {
+      "$date": "2025-08-28T13:45:05.650Z"
+    },
+    "successCount": 5
+  }
+},
+{
+  "_id": "687ff62358ab6c38f1e29bd5",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "SMS Keyword Router",
+  "description": "Handles customer SMS responses with keywords",
+  "isActive": false,
+  "priority": 10,
+  "trigger": {
+    "type": "sms-received",
+    "entityType": "message"
+  },
+  "conditions": [],
+  "actions": [
+    {
+      "type": "keyword-router",
+      "config": {
+        "keywords": {
+          "R|RESCHEDULE": "reschedule-flow",
+          "C|CONFIRM": "confirm-appointment",
+          "YES|ACCEPT|APPROVED": "accept-quote",
+          "NO|DECLINE": "decline-quote",
+          "PAY|PAYMENT": "send-payment-link",
+          "STOP": "opt-out",
+          "START": "opt-in",
+          "?|HELP": "send-help-menu"
+        },
+        "defaultAction": "forward-to-consultant"
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.628Z",
+  "updatedAt": "2025-07-22T20:35:47.628Z",
+  "executionStats": {
+    "executionCount": 18,
+    "lastExecuted": {
+      "$date": "2025-08-28T16:01:03.655Z"
+    },
+    "successCount": 18
+  }
+},
+{
+  "_id": "687ff62358ab6c38f1e29bd6",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Daily Morning Brief",
+  "description": "Sends daily summary to consultants",
+  "isActive": true,
+  "priority": 5,
+  "trigger": {
+    "type": "recurring-schedule",
+    "config": {
+      "frequency": "daily",
+      "hour": 8,
+      "timezone": "{{location.timezone}}"
+    }
+  },
+  "conditions": [],
+  "actions": [
+    {
+      "type": "send-daily-brief",
+      "config": {
+        "recipientType": "all-consultants",
+        "includeStats": [
+          "tasks-due",
+          "appointments-today",
+          "quotes-pending"
+        ]
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.628Z",
+  "updatedAt": "2025-07-22T20:35:47.628Z",
+  "executionStats": {
+    "executionCount": 12,
+    "lastExecuted": {
+      "$date": "2025-09-01T08:00:17.307Z"
+    },
+    "successCount": 12
+  }
+},
+{
+  "_id": "687ff62358ab6c38f1e29bd7",
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "Weather Check for Appointments",
+  "description": "Checks weather for outdoor appointments",
+  "isActive": false,
+  "priority": 6,
+  "trigger": {
+    "type": "time-based",
+    "entityType": "appointment",
+    "config": {
+      "delayHours": -12,
+      "fromEvent": "appointment:start"
+    }
+  },
+  "conditions": [
+    {
+      "type": "custom",
+      "config": {
+        "expression": "project.isOutdoor === true"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "type": "check-weather",
+      "config": {
+        "location": "{{project.address}}",
+        "severity": 7
+      }
+    },
+    {
+      "type": "conditional-action",
+      "config": {
+        "condition": "weather.severity > 7",
+        "action": {
+          "type": "send-sms",
+          "config": {
+            "recipient": "contact",
+            "message": "Weather alert: {{weather.condition}} expected tomorrow. We may need to reschedule your appointment. We'll call to confirm."
+          }
+        }
+      }
+    }
+  ],
+  "executionCount": 0,
+  "successCount": 0,
+  "failureCount": 0,
+  "createdBy": "system",
+  "createdAt": "2025-07-22T20:35:47.628Z",
+  "updatedAt": "2025-07-22T20:35:47.628Z"
+},
+{
+  "_id": {
+    "$oid": "689d2ada2a1f2d0181f3f7fb"
+  },
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "name": "Contact Assignment Notification",
+  "description": "Notifies users when a contact is assigned to them",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "contact-assigned",
+    "entityType": "contact",
+    "config": {
+      "checkFields": [
+        "assignedTo"
+      ]
+    }
+  },
+  "conditions": [
+    {
+      "field": "assignedTo",
+      "operator": "not-empty",
+      "value": null
+    }
+  ],
+  "actions": [
+    {
+      "type": "push-notification",
+      "config": {
+        "recipientType": "assigned-user",
+        "template": {
+          "title": "🔔 New Contact Assigned",
+          "body": "{{contact.fullName}} has been assigned to you",
+          "priority": 10,
+          "data": {
+            "type": "contact-assigned",
+            "contactId": "{{contact._id}}",
+            "screen": "ContactDetailScreen"
+          }
+        }
+      }
+    },
+    {
+      "type": "create-task",
+      "config": {
+        "title": "Review new contact: {{contact.fullName}}",
+        "assignTo": "{{contact.assignedTo}}",
+        "dueInHours": 24,
+        "priority": "medium",
+        "taskType": "contact-review"
+      }
+    }
+  ],
+  "executionStats": {
+    "executionCount": 31,
+    "successCount": 31,
+    "failureCount": 0,
+    "lastExecutedAt": null,
+    "lastError": null,
+    "lastExecuted": {
+      "$date": "2025-08-28T19:06:48.691Z"
+    }
+  },
+  "createdBy": "system",
+  "createdAt": {
+    "$date": "2025-08-14T00:16:26.647Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-14T00:16:26.647Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68a017f74cb70e93a4ebe62b"
+  },
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "name": "Contract Signed - Move to Deposit",
+  "description": "When contract is signed, move to deposit stage regardless of current stage",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "quote-signed",
+    "entityType": "quote"
+  },
+  "actions": [
+    {
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "message": "Contract signed! Please submit your deposit to secure your project start date."
+      }
+    },
+    {
+      "type": "create-task",
+      "config": {
+        "taskTitle": "Collect deposit from {{contact.name}}",
+        "assignee": "assigned",
+        "priority": "high",
+        "dueDate": {
+          "$date": "2025-08-19T05:32:39.676Z"
+        }
+      }
+    }
+  ],
+  "executionStats": {
+    "executionCount": 2,
+    "successCount": 2,
+    "failureCount": 0,
+    "lastExecuted": {
+      "$date": "2025-08-27T14:32:19.909Z"
+    }
+  },
+  "createdAt": {
+    "$date": "2025-08-16T05:32:39.676Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-16T05:32:39.676Z"
+  },
+  "conditions": []
+},
+{
+  "_id": {
+    "$oid": "68a1f491cc714f233255f4ce"
+  },
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+  "name": "No Deposit - Direct to Active Jobs",
+  "description": "When quote is signed with no deposit required, go straight to active jobs",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "quote-signed",
+    "entityType": "quote"
+  },
+  "conditions": [
+    {
+      "field": "depositAmount",
+      "operator": "equals",
+      "value": 0
+    }
+  ],
+  "actions": [
+    {
+      "type": "transition-pipeline",
+      "config": {
+        "toPipelineId": "aaSTiFRrEPvGYXR9uw85",
+        "toStageId": "dd64488d-9d19-4d8a-9e05-54e0a80b4c09",
+        "useProjectFromQuote": true
+      }
+    }
+  ],
+  "executionStats": {
+    "executionCount": 2,
+    "successCount": 2,
+    "failureCount": 0,
+    "lastExecuted": {
+      "$date": "2025-08-27T14:32:20.008Z"
+    }
+  },
+  "createdBy": "system",
+  "createdAt": {
+    "$date": "2025-08-17T15:26:09.386Z"
+  },
+  "updatedAt": {
+    "$date": "2025-08-17T15:26:09.386Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68a74b684768dd5ee18cf537"
+  },
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "name": "Quote Sent - Move to Quote Sent Stage",
+  "isActive": true,
+  "priority": 10,
+  "trigger": {
+    "type": "quote-sent",
+    "entityType": "quote"
+  },
+  "conditions": [],
+  "actions": [
+    {
+      "type": "move-to-stage",
+      "config": {
+        "pipelineId": "9cGrqJIQlofiY1Ehj8xf",
+        "stageId": "d555045c-9857-4dba-8690-9631068b847e"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-08-21T16:38:00.282Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "68b0cb91c7e9845ecfe1aa96"
+  },
+  "locationId": "loc_default",
+  "name": "TEST: Multi-delay automation",
+  "isActive": true,
+  "trigger": {
+    "type": "manual-test"
+  },
+  "actions": [
+    {
+      "id": "action_1",
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "message": "Immediate SMS - no delay"
+      }
+    },
+    {
+      "id": "action_2",
+      "type": "send-email",
+      "config": {
+        "recipient": "contact",
+        "subject": "1 minute delay",
+        "body": "This should arrive 1 minute after trigger",
+        "delay": {
+          "amount": 1,
+          "unit": "minutes"
+        }
+      }
+    },
+    {
+      "id": "action_3",
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "message": "3 minute delay SMS",
+        "delay": {
+          "amount": 3,
+          "unit": "minutes"
+        }
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-08-28T21:35:13.908Z"
+  },
+  "executionStats": {
+    "executionCount": 660,
+    "lastExecuted": {
+      "$date": "2025-08-28T22:10:51.548Z"
+    },
+    "successCount": 660
+  }
+},
+{
+  "_id": {
+    "$oid": "68b0cca4c7e9845ecfe1aa98"
+  },
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "name": "TEST: Michael Dean automation",
+  "isActive": true,
+  "trigger": {
+    "type": "manual-test"
+  },
+  "actions": [
+    {
+      "id": "action_1",
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "message": "Hi Michael - immediate test SMS from LPai automation"
+      }
+    },
+    {
+      "id": "action_2",
+      "type": "send-email",
+      "config": {
+        "recipient": "contact",
+        "subject": "LPai Test - 2 min delay",
+        "body": "This email should arrive 2 minutes after trigger",
+        "delay": {
+          "amount": 2,
+          "unit": "minutes"
+        }
+      }
+    },
+    {
+      "id": "action_3",
+      "type": "push-notification",
+      "config": {
+        "recipientType": "assigned-user",
+        "message": "Test notification - 5 min delay",
+        "delay": {
+          "amount": 5,
+          "unit": "minutes"
+        }
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-08-28T21:39:48.148Z"
+  },
+  "executionStats": {
+    "executionCount": 72,
+    "lastExecuted": {
+      "$date": "2025-08-28T22:30:59.590Z"
+    },
+    "successCount": 72
+  }
+},
+{
+  "_id": {
+    "$oid": "68b0d255c7e9845ecfe1aa9b"
+  },
+  "locationId": "5OuaTrizW5wkZMI1xtvX",
+  "name": "FINAL TEST: Working automation",
+  "isActive": true,
+  "trigger": {
+    "type": "test-final"
+  },
+  "actions": [
+    {
+      "id": "a1",
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "message": "Instant: Automation working!"
+      }
+    },
+    {
+      "id": "a2",
+      "type": "send-sms",
+      "config": {
+        "recipient": "contact",
+        "message": "2min: Delayed message working!",
+        "delay": {
+          "amount": 2,
+          "unit": "minutes"
+        }
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-08-28T22:04:05.773Z"
+  },
+  "executionStats": {
+    "executionCount": 2,
+    "lastExecuted": {
+      "$date": "2025-08-28T22:10:10.472Z"
+    },
+    "successCount": 2
+  }
+}]

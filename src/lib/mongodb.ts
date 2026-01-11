@@ -1,0 +1,39 @@
+// lpai-backend/src/lib/mongodb.ts
+import { MongoClient, MongoClientOptions } from 'mongodb';
+
+const uri = process.env.NODE_ENV === 'development' ? process.env.LOCAL_MONGODB_URI as string : process.env.MONGODB_URI as string;
+
+console.log('uri', process.env.NODE_ENV);
+console.log('uri2', process.env.LOCAL_MONGODB_URI);
+console.log('uri3', process.env.MONGODB_URI);
+export function getDbName(): string {
+  // return process.env.NODE_ENV === 'development' ? 'local' : 'lpai';
+  return process.env.NODE_ENV === 'development' ? 'lpai' : 'lpai';
+}
+
+const options: MongoClientOptions = {};
+
+if (!uri) {
+  throw new Error('⚠️ MONGODB_URI is missing in environment variables');
+}
+
+let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
+
+if (process.env.NODE_ENV === 'development') {
+  const globalWithMongo = global as typeof globalThis & {
+    _mongoClientPromise?: Promise<MongoClient>;
+  };
+
+  if (!globalWithMongo._mongoClientPromise) {
+    client = new MongoClient(uri, options);
+    globalWithMongo._mongoClientPromise = client.connect();
+  }
+
+  clientPromise = globalWithMongo._mongoClientPromise!;
+} else {
+  client = new MongoClient(uri, options);
+  clientPromise = client.connect();
+}
+
+export default clientPromise;

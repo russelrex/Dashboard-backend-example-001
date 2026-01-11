@@ -1,0 +1,53 @@
+// pages/api/cron/process-contacts.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+import clientPromise, { getDbName } from '../../../src/lib/mongodb';
+import { ContactsProcessor } from '../../../src/utils/webhooks/processors/contacts';
+import { initializeAutomationSystem } from '../../../src/lib/automationInit';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Verify cron secret
+  const authHeader = req.headers.authorization;
+  const cronSecret = process.env.CRON_SECRET;
+  const isVercelCron = req.headers['x-vercel-cron'] === '1';
+  
+  if (!isVercelCron && authHeader !== `Bearer ${cronSecret}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const startTime = Date.now();
+
+  try {
+    // Get database connection
+    const client = await clientPromise;
+    const db = client.db(getDbName());
+    
+    // Initialize automation system
+    await initializeAutomationSystem(db);
+    
+    // Create and run processor with database
+    const processor = new ContactsProcessor(db);
+    await processor.run();
+
+    const runtime = Date.now() - startTime;
+    
+    return res.status(200).json({
+      success: true,
+      processor: 'contacts',
+      runtime: `${(runtime / 1000).toFixed(1)}s`,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error: any) {
+    console.error('[Contacts Cron] Fatal error:', error);
+    
+    return res.status(500).json({
+      error: 'Contacts processor failed',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+}
+
+export const config = {
+  maxDuration: 60
+};

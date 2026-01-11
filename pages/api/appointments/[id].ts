@@ -1,0 +1,319 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+import clientPromise, { getDbName } from '../../../src/lib/mongodb';
+import { ObjectId } from 'mongodb';
+import axios from 'axios';
+import { Resend } from 'resend';
+import { publishAblyEvent } from '../../../src/utils/ably/publishEvent';
+import ably from '@/lib/ably-server';
+import { triggerAppointmentAutomation } from '@/utils/automations/triggerHelper';
+
+const GHL_BASE_URL = 'https://services.leadconnectorhq.com';
+
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Email notification utility
+async function sendNotificationEmail({ subject, text }: { subject: string; text: string }) {
+  try {
+    await resend.emails.send({
+      from: 'LPai App <info@leadprospecting.ai>',
+      to: [process.env.ADMIN_EMAIL || 'info@leadprospecting.ai'],
+      subject,
+      text,
+    });
+  } catch (err) {
+    console.error('[Resend] Failed to send notification email:', err);
+  }
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const client = await clientPromise;
+  const db = client.db(getDbName());
+  const { id } = req.query;
+
+  console.log(`[API] [id].ts called for /api/appointments/${id} with method: ${req.method}`);
+
+  if (req.method === 'POST') {
+    console.warn(`[API] Attempted POST to [id].ts for appointment ${id} - this is NOT allowed.`);
+    return res.status(405).json({ error: 'POST not allowed here. Use /api/appointments.' });
+  }
+  if (!id || typeof id !== 'string') return res.status(400).json({ error: 'Missing appointment id' });
+
+  // GET (fetch by id or by GHL event id)
+  if (req.method === 'GET') {
+    const { source } = req.query;
+    try {
+      if (source === 'ghl') {
+        const appt = await db.collection('appointments').findOne({
+          $or: [{ _id: new ObjectId(id) }, { ghlAppointmentId: id }]
+        });
+        if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+        const location = await db.collection('locations').findOne({ locationId: appt.locationId });
+        if (!location?.ghlOAuth?.accessToken || !appt.ghlAppointmentId) {
+          return res.status(400).json({ error: 'Missing GHL data for this appointment' });
+        }
+        const ghlRes = await axios.get(
+          `${GHL_BASE_URL}/calendars/events/appointments/${appt.ghlAppointmentId}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${location.ghlOAuth.accessToken}`,
+              'Version': '2021-04-15',
+              'Accept': 'application/json',
+            }
+          }
+        );
+        return res.status(200).json(ghlRes.data);
+      } else {
+        const appt = await db.collection('appointments').findOne({ _id: new ObjectId(id) });
+        if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+        return res.status(200).json(appt);
+      }
+    } catch (err) {
+      console.error('[API] [id].ts GET error:', err);
+      return res.status(500).json({ error: 'Failed to fetch appointment', details: err instanceof Error ? err.message : err });
+    }
+  }
+
+  // PATCH/PUT (edit or cancel)
+  if (req.method === 'PATCH' || req.method === 'PUT') {
+    const updateFields = req.body || {};
+    try {
+      const appt = await db.collection('appointments').findOne({ _id: new ObjectId(id) });
+      if (!appt) return res.status(404).json({ error: 'Appointment not found' });
+      const location = await db.collection('locations').findOne({ locationId: appt.locationId });
+      if (!location?.ghlOAuth?.accessToken || !appt.ghlAppointmentId) {
+        return res.status(400).json({ error: 'Missing GHL data for this appointment' });
+      }
+
+      // If cancellation
+      if (updateFields.status === 'cancelled') {
+        // 1. Update status in Mongo
+        await db.collection('appointments').updateOne(
+          { _id: new ObjectId(id) },
+          { $set: { status: 'cancelled', updatedAt: new Date() } }
+        );
+
+        // 2. Send PATCH to GHL to cancel appointment
+        try {
+          const ghlCancelRes = await axios.put(
+            `${GHL_BASE_URL}/calendars/events/appointments/${appt.ghlAppointmentId}`,
+            { appointmentStatus: 'cancelled' },
+            {
+              headers: {
+                'Authorization': `Bearer ${location.ghlOAuth.accessToken}`,
+                'Version': '2021-04-15',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              }
+            }
+          );
+          
+          // Fetch the updated appointment for the Ably event
+          const updatedAppointment = await db.collection('appointments').findOne({ _id: new ObjectId(id) });
+          
+          // Publish Ably event for appointment cancellation
+          await publishAblyEvent({
+            locationId: appt.locationId,
+            userId: req.headers['x-user-id'] as string || appt.userId,
+            entity: updatedAppointment,
+            eventType: 'appointment.cancelled'
+          });
+
+          // ADD THIS: Direct publish to contact channel for appointment cancellation
+          try {
+            const Ably = require('ably');
+            const ably = new Ably.Rest(process.env.ABLY_API_KEY);
+            const contactChannel = ably.channels.get(`contact:${appt.contactId}`);
+            
+            await contactChannel.publish('appointment.deleted', {
+              appointment: updatedAppointment,
+              contactId: appt.contactId,
+              timestamp: new Date().toISOString()
+            });
+            
+            console.log(`[Ably] Published appointment.deleted to contact:${appt.contactId}`);
+          } catch (ablyError) {
+            console.error('[Ably] Failed to publish appointment cancellation to contact channel:', ablyError);
+          }
+
+          // 🔄 Create automation trigger for appointment cancellation
+          await triggerAppointmentAutomation(db, {
+            appointmentId: id,
+            locationId: appt.locationId,
+            eventType: 'appointment-cancelled',
+            contactId: appt.contactId,
+            projectId: appt.projectId,
+            assignedTo: appt.userId,
+            title: appt.title
+          });
+          
+          return res.status(200).json({ success: true, cancelled: true, ghl: ghlCancelRes.data });
+        } catch (ghlErr: any) {
+          await sendNotificationEmail({
+            subject: '[LPai] GHL Appointment Cancel FAILED',
+            text: `
+GHL appointment failed to cancel!
+
+Mongo _id: ${id}
+GHL Appointment ID: ${appt.ghlAppointmentId}
+Location ID: ${appt.locationId}
+Contact ID: ${appt.contactId}
+Time: ${appt.start} - ${appt.end}
+
+Error:
+${JSON.stringify(ghlErr?.response?.data || ghlErr.message, null, 2)}
+            `,
+          });
+          console.error(`[API] GHL appointment cancel failed for: ${appt.ghlAppointmentId}`, ghlErr?.response?.data || ghlErr.message);
+          return res.status(500).json({ error: 'Failed to cancel in GHL', details: ghlErr?.response?.data || ghlErr.message });
+        }
+      }
+
+      // Else: normal edit/update flow
+      await db.collection('appointments').updateOne(
+        { _id: new ObjectId(id) }, 
+        { $set: { ...updateFields, updatedAt: new Date() } }
+      );
+
+      // 🔄 Check for appointment status changes and create automation triggers
+      if (updateFields.status && appt.status !== updateFields.status) {
+        if (updateFields.status === 'cancelled') {
+          await triggerAppointmentAutomation(db, {
+            appointmentId: id,
+            locationId: appt.locationId,
+            eventType: 'appointment-cancelled',
+            contactId: appt.contactId,
+            projectId: appt.projectId,
+            assignedTo: appt.userId,
+            title: appt.title
+          });
+        } else if (updateFields.status === 'completed') {
+          await triggerAppointmentAutomation(db, {
+            appointmentId: id,
+            locationId: appt.locationId,
+            eventType: 'appointment-completed',
+            contactId: appt.contactId,
+            projectId: appt.projectId,
+            assignedTo: appt.userId,
+            title: appt.title
+          });
+        }
+      }
+
+      // When appointment is marked completed
+      if (updateFields.status === 'completed') {
+        const { AutomationEventListener } = await import('../../../src/services/automationEventListener');
+        const automationEventListener = new AutomationEventListener(db);
+        await automationEventListener.emitAppointmentCompleted(appt);
+      }
+
+      // When appointment time changes
+      if (updateFields.start && updateFields.start !== appt.start) {
+        const { AutomationEventListener } = await import('../../../src/services/automationEventListener');
+        const automationEventListener = new AutomationEventListener(db);
+        await automationEventListener.emitAppointmentRescheduled(appt, updateFields);
+      }
+
+      // When appointment is marked no-show
+      if (updateFields.status === 'no-show') {
+        const { AutomationEventListener } = await import('../../../src/services/automationEventListener');
+        const automationEventListener = new AutomationEventListener(db);
+        await automationEventListener.emitAppointmentNoShow(appt);
+      }
+
+      // Check if appointment was cancelled
+      if (updateFields.status === 'cancelled' && appt.status !== 'cancelled') {
+        const { AutomationEventListener } = await import('../../../src/services/automationEventListener');
+        const automationEventListener = new AutomationEventListener(db);
+        await automationEventListener.emitAppointmentCancelled(appt);
+      }
+
+      // Check if appointment was rescheduled (time changed)
+      if (updateFields.start && appt.start && 
+          new Date(updateFields.start).getTime() !== new Date(appt.start).getTime()) {
+        const { AutomationEventListener } = await import('../../../src/services/automationEventListener');
+        const automationEventListener = new AutomationEventListener(db);
+        const updatedAppt = { ...appt, ...updateFields };
+        await automationEventListener.emitAppointmentRescheduled(appt, updatedAppt);
+      }
+
+      // Compose payload for GHL edit
+      const payload = {
+        title: updateFields.title ?? appt.title,
+        meetingLocationType: updateFields.meetingLocationType ?? appt.meetingLocationType ?? 'custom',
+        meetingLocationId: updateFields.meetingLocationId ?? appt.meetingLocationId ?? 'default',
+        appointmentStatus: updateFields.appointmentStatus ?? appt.appointmentStatus ?? 'new',
+        assignedUserId: updateFields.userId ?? appt.userId,
+        address: updateFields.address ?? appt.address ?? '',
+        calendarId: updateFields.calendarId ?? appt.calendarId,
+        locationId: appt.locationId,
+        contactId: appt.contactId,
+        startTime: updateFields.start ?? appt.start,
+        endTime: updateFields.end ?? appt.end,
+        notes: updateFields.notes ?? appt.notes,
+        ignoreFreeSlotValidation: true,  // ✅ This is the REAL parameter from GHL docs
+      };
+
+      const ghlRes = await axios.put(
+        `${GHL_BASE_URL}/calendars/events/appointments/${appt.ghlAppointmentId}`,
+        payload,
+        {
+          headers: {
+            'Authorization': `Bearer ${location.ghlOAuth.accessToken}`,
+            'Version': '2021-04-15',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+      
+      // Fetch the updated appointment for the Ably event
+      const updatedAppointment = await db.collection('appointments').findOne({ _id: new ObjectId(id) });
+      
+      // Publish Ably event for appointment update
+      await publishAblyEvent({
+        locationId: appt.locationId,
+        userId: req.headers['x-user-id'] as string || appt.userId,
+        entity: updatedAppointment,
+        eventType: 'appointment.updated'
+      });
+
+      // ADD THIS: Direct publish to contact channel for appointment updates
+      try {
+        const Ably = require('ably');
+        const ably = new Ably.Rest(process.env.ABLY_API_KEY);
+        const contactChannel = ably.channels.get(`contact:${appt.contactId}`);
+        
+        await contactChannel.publish('appointment.updated', {
+          appointment: updatedAppointment,
+          contactId: appt.contactId,
+          timestamp: new Date().toISOString()
+        });
+        
+        console.log(`[Ably] Published appointment.updated to contact:${appt.contactId}`);
+      } catch (ablyError) {
+        console.error('[Ably] Failed to publish appointment update to contact channel:', ablyError);
+      }
+
+      // 🔄 Create automation trigger for appointment updates
+      await triggerAppointmentAutomation(db, {
+        appointmentId: id,
+        locationId: appt.locationId,
+        eventType: 'appointment-updated',
+        contactId: appt.contactId,
+        projectId: appt.projectId,
+        assignedTo: appt.userId || updateFields.userId,
+        startTime: updateFields.start || appt.start,
+        title: appt.title
+      });
+      
+      return res.status(200).json({ success: true, updated: updateFields, ghl: ghlRes.data });
+    } catch (err: any) {
+      console.error(`[API] [id].ts PATCH/PUT error for appointment ${id}:`, err?.response?.data || err.message || err);
+      return res.status(500).json({ error: 'Failed to update appointment', details: err?.response?.data || err.message || err });
+    }
+  }
+
+  res.setHeader('Allow', ['GET', 'PATCH', 'PUT']);
+  return res.status(405).json({ error: `Method ${req.method} not allowed` });
+}
