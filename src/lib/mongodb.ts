@@ -5,7 +5,7 @@ const uri = process.env.NODE_ENV === 'development' ? process.env.LOCAL_MONGODB_U
 
 export function getDbName(): string {
   // return process.env.NODE_ENV === 'development' ? 'local' : 'lpai';
-  return process.env.NODE_ENV === 'development' ? 'Test' : 'Test';
+  return process.env.NODE_ENV === 'development' ? 'example_db' : 'example_db';
 }
 
 const options: MongoClientOptions = {};

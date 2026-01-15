@@ -10,16 +10,39 @@ process.env.NODE_ENV = 'development';
 console.log('🌱 Seeding local database...\n');
 
 const getDbName = () => {
+  // Check if DATABASE_NAME is explicitly set
+  if (process.env.DATABASE_NAME) {
+    return process.env.DATABASE_NAME;
+  }
+  
+  // Extract database name from connection string
+  const uri = process.env.MONGODB_URI || process.env.LOCAL_MONGODB_URI;
+  if (uri) {
+    try {
+      const url = new URL(uri);
+      const dbName = url.pathname?.slice(1); // Remove leading slash
+      if (dbName) {
+        return dbName;
+      }
+    } catch (e) {
+      // If URL parsing fails, try regex extraction
+      const match = uri.match(/\/\/(?:[^\/]+)\/([^?]+)/);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+  }
+  
+  // Fallback to default based on NODE_ENV
   return process.env.NODE_ENV === 'development' ? 'local' : 'lpai';
 };
 
 const connectToDatabase = async () => {
-  const uri = process.env.NODE_ENV === 'development' 
-    ? process.env.LOCAL_MONGODB_URI || 'mongodb://localhost:27017/local'
-    : process.env.MONGODB_URI;
+  // Prefer MONGODB_URI if set, otherwise use LOCAL_MONGODB_URI
+  const uri = process.env.MONGODB_URI || process.env.LOCAL_MONGODB_URI || 'mongodb://localhost:27017/local';
   
   if (!uri) {
-    throw new Error('⚠️ Database URI is missing in environment variables');
+    throw new Error('⚠️ Database URI is missing in environment variables. Please set MONGODB_URI or LOCAL_MONGODB_URI');
   }
   
   console.log(`🔗 Connecting to: ${uri.replace(/\/\/.*@/, '//***@')}`);
