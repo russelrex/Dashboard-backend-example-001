@@ -1,6 +1,6 @@
 // New file: pages/api/contacts/[contactId]/sync-notes.ts
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getAuthenticatedDb } from '../../../../src/lib/mongodb';
+import clientPromise, { getDbName } from '../../../../src/lib/mongodb';
 import { syncContactNotes } from '../../../../src/utils/sync/syncContactNotes';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -12,7 +12,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { locationId } = req.body;
 
   try {
-    const { db } = await getAuthenticatedDb(req);
+    const client = await clientPromise;
+    const db = client.db(getDbName());
     
     // Get location for auth
     const location = await db.collection('locations').findOne({ locationId });

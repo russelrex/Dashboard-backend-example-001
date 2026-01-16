@@ -1,7 +1,7 @@
 // pages/api/search/contacts.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise, { getDbName } from '../../../src/lib/mongodb';
-import { sendSuccess, sendError, sendPaginatedResponse } from '../../../src/utils/response';
+import { sendSuccess, sendError, sendPaginatedSuccess } from '../../../src/utils/response';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -69,10 +69,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       db.collection('contacts').countDocuments(searchFilter)
     ]);
 
-    return sendPaginatedResponse(res, contacts, {
+    return sendPaginatedSuccess(res, contacts, {
       total,
       limit,
-      offset
+      offset,
+      hasMore: offset + limit < total
     });
 
   } catch (error) {

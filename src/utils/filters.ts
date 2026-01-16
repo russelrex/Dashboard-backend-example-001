@@ -291,6 +291,37 @@ export function buildInvoiceFilter(params: ParsedQueryParams): any {
 }
 
 /**
+* Build MongoDB filter for tasks
+*/
+export function buildTaskFilter(params: ParsedQueryParams): any {
+ const filter: any = {};
+ 
+ if (params.locationId) filter.locationId = params.locationId;
+ if (params.completed !== undefined) {
+   filter.completed = params.completed === 'true';
+ }
+ if (params.userId) filter.userId = params.userId;
+ if (params.contactId) {
+   filter.contactId = ObjectId.isValid(params.contactId) 
+     ? new ObjectId(params.contactId) 
+     : params.contactId;
+ }
+ if (params.projectId) {
+   filter.projectId = ObjectId.isValid(params.projectId) 
+     ? new ObjectId(params.projectId) 
+     : params.projectId;
+ }
+ if (params.status) filter.status = params.status;
+ 
+ // Exclude soft-deleted tasks by default
+ if (!params.includeDeleted) {
+   filter.deletedAt = { $exists: false };
+ }
+ 
+ return filter;
+}
+
+/**
 * Safely parse ObjectId or return the original string
 * @param id - The ID to parse
 * @returns ObjectId or original string

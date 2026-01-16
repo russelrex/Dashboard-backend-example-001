@@ -7,7 +7,7 @@
  */
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { connectToDatabase } from '@/lib/mongodb';
+import clientPromise, { getDbName } from '../../../../src/lib/mongodb';
 import { ObjectId } from 'mongodb';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -23,7 +23,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Quote ID and locationId required' });
     }
 
-    const { db } = await connectToDatabase();
+    const client = await clientPromise;
+    const db = client.db(getDbName());
 
     // Get quote with all related data
     const quote = await db.collection('projects').findOne({
