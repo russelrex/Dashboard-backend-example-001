@@ -6,7 +6,8 @@ const cors = initMiddleware(
     origin: [
       'http://localhost:3000',
       'https://www.leadprospecting.ai',
-      'https://www.fieldserv.ai'
+      'https://www.fieldserv.ai',
+      'https://dashboard-example-001-git-main-russelrexs-projects.vercel.app'
     ],
     methods: ['GET', 'POST', 'OPTIONS', 'DELETE', 'PATCH', 'PUT'],
   })
